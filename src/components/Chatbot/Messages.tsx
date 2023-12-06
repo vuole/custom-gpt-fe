@@ -57,9 +57,10 @@ const MockData = [
 interface MessagesProps {
   messages: MessageType[];
   isLoading: boolean;
+  messagesEndpoint: React.RefObject<HTMLDivElement>;
 }
 
-export default function Messages({ messages, isLoading }: MessagesProps) {
+export default function Messages({ messages, isLoading, messagesEndpoint }: MessagesProps) {
   return (
     <MessagesContainer>
       {!messages.length && (
@@ -87,6 +88,7 @@ export default function Messages({ messages, isLoading }: MessagesProps) {
           );
         })}
       {isLoading && <LinearProgress />}
+      <div ref={messagesEndpoint}></div>
     </MessagesContainer>
   );
 }

@@ -5,7 +5,7 @@ import { Center } from "../components";
 import { Divider, Typography } from "@mui/material";
 import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
 import law_image from "../assets/law-image.png";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MessageType } from "../types/Message";
 import { useMutation } from "react-query";
 import ChatAPI from "../api/ChatAPI";
@@ -44,6 +44,7 @@ const ChatBotHeader = styled(Center)`
 export default function ChatbotPage() {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const messagesEndpoint = useRef<HTMLDivElement>(null);
 
   // const sendQuestionMutation = useMutation({
   //   mutationFn: (params: { question: string }) => ChatAPI.sendQuestion(params),
@@ -83,6 +84,11 @@ export default function ChatbotPage() {
     }
   };
 
+  //scroll to bottom conversation
+  useEffect(() => {
+    messagesEndpoint?.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [messages]);
+
   return (
     <ChatBotContainer>
       <ChatBotLayout>
@@ -92,7 +98,7 @@ export default function ChatbotPage() {
           </Typography>
           <SmartToyOutlinedIcon />
         </ChatBotHeader>
-        <Messages messages={messages} isLoading={isLoading} />
+        <Messages messages={messages} isLoading={isLoading} messagesEndpoint={messagesEndpoint} />
         <Divider />
         <InputBox onSendQuestion={handleSendQuestion} isLoading={isLoading} />
       </ChatBotLayout>

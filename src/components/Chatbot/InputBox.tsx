@@ -53,7 +53,15 @@ export default function InputBox({ onSendQuestion, isLoading }: InputBoxProps) {
         }}
         disabled={isLoading}
       />
-      <IconButton onClick={() => {}} disabled={isLoading}>
+      <IconButton
+        onClick={() => {
+          if (question) {
+            setQuestion("");
+            onSendQuestion(question);
+          }
+        }}
+        disabled={isLoading}
+      >
         <SendIcon sx={{ color: "#0095C5", fontSize: "20px" }} />
       </IconButton>
     </InputBoxContainer>
