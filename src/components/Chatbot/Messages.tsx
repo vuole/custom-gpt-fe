@@ -22,6 +22,20 @@ const InfoContainer = styled.div`
   gap: 8px;
 `;
 
+const Pre = styled.pre`
+  width: fit-content;
+  max-width: 90%;
+  margin: 0 0 0 48px;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: sans-serif;
+  white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
+  white-space: -pre-wrap; /* Opera */
+  white-space: -o-pre-wrap; /* Opera */
+  white-space: pre-wrap; /* CSS3 - Text module (Candidate Recommendation) http://www.w3.org/TR/css3-text/#white-space */
+  word-wrap: break-word; /* IE 5.5+ */
+`;
+
 const FirstGreeting = styled.div`
   height: 100%;
   display: flex;
@@ -68,9 +82,7 @@ export default function Messages({ messages, isLoading }: MessagesProps) {
                 </Avatar>
                 <Typography fontWeight={600}>{message.question ? "Bạn" : "Chatbot"}</Typography>
               </InfoContainer>
-              <Typography marginLeft="48px" width="fit-content" maxWidth="90%">
-                {message.question ? message.question : message.answer}
-              </Typography>
+              <Pre>{message.question ? message.question : message.answer}</Pre>
             </MessagesLayout>
           );
         })}

@@ -9,6 +9,7 @@ import { useState } from "react";
 import { MessageType } from "../types/Message";
 import { useMutation } from "react-query";
 import ChatAPI from "../api/ChatAPI";
+import { BASE_URL } from "../api";
 
 const ChatBotContainer = styled(Center)`
   height: 100vh;
@@ -42,25 +43,44 @@ const ChatBotHeader = styled(Center)`
 
 export default function ChatbotPage() {
   const [messages, setMessages] = useState<MessageType[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const sendQuestionMutation = useMutation({
-    mutationFn: (params: { question: string }) => ChatAPI.sendQuestion(params),
-  });
+  // const sendQuestionMutation = useMutation({
+  //   mutationFn: (params: { question: string }) => ChatAPI.sendQuestion(params),
+  //   retry: true,
+  // });
 
   const handleSendQuestion = async (question: string) => {
     setMessages([...messages, { question }]);
-    sendQuestionMutation.mutate(
-      { question },
-      {
-        onSuccess: data => {
-          setMessages([...messages, { question }, data]);
+    // sendQuestionMutation.mutate(
+    //   { question },
+    //   {
+    //     onSuccess: data => {
+    //       setMessages([...messages, { question }, data]);
+    //     },
+    //     onError: (error: any) => {
+    //       const errorMessage = error.response.data.message;
+    //       console.log(errorMessage);
+    //     },
+    //   }
+    // );
+    setIsLoading(true);
+    try {
+      const res = await fetch(`${BASE_URL}/chat`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
         },
-        onError: (error: any) => {
-          const errorMessage = error.response.data.message;
-          console.log(errorMessage);
-        },
-      }
-    );
+        body: JSON.stringify({
+          question,
+        }),
+      });
+      const data = await res.json();
+      setMessages([...messages, { question }, data]);
+    } catch (error) {
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -72,9 +92,9 @@ export default function ChatbotPage() {
           </Typography>
           <SmartToyOutlinedIcon />
         </ChatBotHeader>
-        <Messages messages={messages} isLoading={sendQuestionMutation.isLoading} />
+        <Messages messages={messages} isLoading={isLoading} />
         <Divider />
-        <InputBox onSendQuestion={handleSendQuestion} isLoading={sendQuestionMutation.isLoading} />
+        <InputBox onSendQuestion={handleSendQuestion} isLoading={isLoading} />
       </ChatBotLayout>
     </ChatBotContainer>
   );
